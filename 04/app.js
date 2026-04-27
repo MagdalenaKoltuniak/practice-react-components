@@ -4,86 +4,92 @@ import { createRoot } from 'react-dom/client';
 const root = createRoot(document.querySelector('#root'));
 
 class App extends React.Component {
-    state = { 
-        firstName: '',
-        lastName: '',
-        searchQuery: '',
-        users: ['Jan Kowalski', 'Michał Nowak'],
-    }
+	state = {
+		firstName: '',
+		lastName: '',
+		searchQuery: '',
+		users: ['Jan Kowalski', 'Michał Nowak'],
+	};
 
-    renderUsersList() {
-        const {users} = this.state;
-        return users.map(name => {
-            return (
-                <li onClick={ this.clickHandler }>
-                    { name }
-                </li>
-            );
-        });
-    }
+	renderUsersList() {
+		const { users, searchQuery } = this.state;
 
-    clickHandler = e => {
-        const {innerText: userName} = e.target;
-        this.removeUser(userName);
-    }
+		const filteredUsers = searchQuery
+			? users.filter(user => user.toLowerCase().includes(searchQuery.toLowerCase()))
+			: users;
 
-    inputChange = e => {
-        const {name, value} = e.target;
-        this.setState({
-            [name]: value,
-        });
-    }
+		return filteredUsers.map((name, index) => {
+			return (
+				<li key={index} onClick={this.clickHandler}>
+					{name}
+				</li>
+			);
+		});
+	}
 
-    render() {
-        const { firstName, lastName } = this.state;
-        return (
-            <section onSubmit={ this.submitHandler }>
-                <form>
-                    <input name="firstName"
-                        value={ firstName }
-                        onChange={ this.inputChange }
-                    />
-                    <input name="lastName"
-                        value={ lastName }
-                        onChange={ this.inputChange }
-                    />
-                    <input type="submit"/>
-                </form>
-                <ul>{ this.renderUsersList() }</ul>
-            </section>
-        );
-    }
+	clickHandler = e => {
+		const { innerText: userName } = e.target;
+		this.removeUser(userName);
+	};
 
-    submitHandler = e => {
-        e.preventDefault();
+	inputChange = e => {
+		const { name, value } = e.target;
+		this.setState({
+			[name]: value,
+		});
+	};
 
-        const { firstName, lastName } = this.state;
-        if(firstName && lastName) {
-            this.addUser(`${firstName} ${lastName}`);
-            this.setState({
-                firstName: '',
-                lastName: '',
-            });
-        } else {
-            // tutaj komunikat dla użytkownika
-        }
-    }
+	render() {
+		const { firstName, lastName, searchQuery } = this.state;
+		return (
+			<section onSubmit={this.submitHandler}>
+				<form>
+					<input name='firstName' value={firstName} onChange={this.inputChange} />
+					<input name='lastName' value={lastName} onChange={this.inputChange} />
+					<input type='submit' />
+				</form>
+				<input name='searchQuery' value={searchQuery} placeholder='wyszukaj uczestnika...' onChange={this.findUser} />
+				<ul>{this.renderUsersList()}</ul>
+			</section>
+		);
+	}
 
-    addUser(name) {
-        this.setState({
-            users: [...this.state.users, name],
-        });
-    }
+	submitHandler = e => {
+		e.preventDefault();
 
-    removeUser(name) {
-        const currUsers = this.state.users.filter(
-            user => user != name
-        );
+		const { firstName, lastName } = this.state;
+		if (firstName && lastName) {
+			this.addUser(`${firstName} ${lastName}`);
+			this.setState({
+				firstName: '',
+				lastName: '',
+			});
+		} else {
+			// tutaj komunikat dla użytkownika
+			alert('Uzupełnij imię i nazwisko przed dodaniem użytkownika');
+		}
+	};
 
-        this.setState({
-            users: currUsers,
-        });
-    }
+	addUser(name) {
+		this.setState({
+			users: [...this.state.users, name],
+		});
+	}
+
+	removeUser(name) {
+		const currUsers = this.state.users.filter(user => user != name);
+
+		this.setState({
+			users: currUsers,
+		});
+	}
+
+	findUser = e => {
+		const { name, value } = e.target;
+		this.setState({
+			[name]: value,
+		});
+	};
 }
 
-root.render(<App/>);
+root.render(<App />);
