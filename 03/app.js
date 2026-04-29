@@ -48,6 +48,9 @@ class Article extends React.Component {
 	submitHandler = e => {
 		e.preventDefault();
 		const { comments, content } = this.state;
+
+		if (!content.trim()) return;
+
 		this.addComment(content);
 		this.setState({ content: '' });
 	};
