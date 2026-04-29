@@ -18,8 +18,9 @@ class Weather extends React.Component {
 			throw new Error(`HTTP error: ${resp.status}`);
 		}
 
-		const data = await resp.json();
-		return data?.data?.[0] ?? null;
+		const json = await resp.json();
+		const [weather = null] = json.data || [];
+		return weather;
 	};
 
 	async componentDidMount() {
