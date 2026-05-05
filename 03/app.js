@@ -49,7 +49,10 @@ class Article extends React.Component {
 		e.preventDefault();
 		const { comments, content } = this.state;
 
-		if (!content.trim()) return;
+		if (!content.trim()) {
+			alert('Wpisz komentarz');
+			return;
+		}
 
 		this.addComment(content);
 		this.setState({ content: '' });
